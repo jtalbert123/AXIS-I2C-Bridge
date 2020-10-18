@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_axis_i2c_master_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="axi4stream_vip_pkg" />
+            <top_module name="glbl" />
+            <top_module name="i2c_vip_pkg" />
+            <top_module name="s_axis_vip_pkg" />
+            <top_module name="tb_axis_i2c_master" />
+            <top_module name="xil_common_vip_pkg" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="303600001fs"></ZoomEndTime>
+      <Cursor1Time time="25405000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="212"></NameColumnWidth>
+      <ValueColumnWidth column_width="144"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="29" />
+   <wave_markers>
+      <marker time="100775000000" label="" />
+   </wave_markers>
+   <wvobject fp_name="/tb_axis_i2c_master/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/resetn" type="logic">
+      <obj_property name="ElementShortName">resetn</obj_property>
+      <obj_property name="ObjectShortName">resetn</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/req_tready" type="logic">
+      <obj_property name="ElementShortName">req_tready</obj_property>
+      <obj_property name="ObjectShortName">req_tready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/req_tdata" type="array">
+      <obj_property name="ElementShortName">req_tdata[7:0]</obj_property>
+      <obj_property name="ObjectShortName">req_tdata[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/req_tlast" type="logic">
+      <obj_property name="ElementShortName">req_tlast</obj_property>
+      <obj_property name="ObjectShortName">req_tlast</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/req_tvalid" type="logic">
+      <obj_property name="ElementShortName">req_tvalid</obj_property>
+      <obj_property name="ObjectShortName">req_tvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="group24" type="group">
+      <obj_property name="label">Bus</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_axis_i2c_master/SDA" type="logic">
+         <obj_property name="ElementShortName">SDA</obj_property>
+         <obj_property name="ObjectShortName">SDA</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_axis_i2c_master/SCL" type="logic">
+         <obj_property name="ElementShortName">SCL</obj_property>
+         <obj_property name="ObjectShortName">SCL</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group26" type="group">
+      <obj_property name="label">New Group 1</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject fp_name="/tb_axis_i2c_master/i2cbus/sda_o_slv" type="logic">
+         <obj_property name="ElementShortName">sda_o_slv</obj_property>
+         <obj_property name="ObjectShortName">sda_o_slv</obj_property>
+      </wvobject>
+      <wvobject fp_name="/tb_axis_i2c_master/i2cbus/scl_o_slv" type="logic">
+         <obj_property name="ElementShortName">scl_o_slv</obj_property>
+         <obj_property name="ObjectShortName">scl_o_slv</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group32" type="group">
+      <obj_property name="label">New Group 2</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/curr_state" type="array">
+      <obj_property name="ElementShortName">curr_state[4:0]</obj_property>
+      <obj_property name="ObjectShortName">curr_state[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/next_state" type="array">
+      <obj_property name="ElementShortName">next_state[4:0]</obj_property>
+      <obj_property name="ObjectShortName">next_state[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/quantagen_tick" type="logic">
+      <obj_property name="ElementShortName">quantagen_tick</obj_property>
+      <obj_property name="ObjectShortName">quantagen_tick</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/bit_counter" type="array">
+      <obj_property name="ElementShortName">bit_counter[2:0]</obj_property>
+      <obj_property name="ObjectShortName">bit_counter[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/bit_counter_clr" type="logic">
+      <obj_property name="ElementShortName">bit_counter_clr</obj_property>
+      <obj_property name="ObjectShortName">bit_counter_clr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/fsm_sample" type="logic">
+      <obj_property name="ElementShortName">fsm_sample</obj_property>
+      <obj_property name="ObjectShortName">fsm_sample</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/received_nack" type="logic">
+      <obj_property name="ElementShortName">received_nack</obj_property>
+      <obj_property name="ObjectShortName">received_nack</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/bit_state" type="array">
+      <obj_property name="ElementShortName">bit_state[1:0]</obj_property>
+      <obj_property name="ObjectShortName">bit_state[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/last_byte" type="logic">
+      <obj_property name="ElementShortName">last_byte</obj_property>
+      <obj_property name="ObjectShortName">last_byte</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/bit_state_next" type="array">
+      <obj_property name="ElementShortName">bit_state_next[1:0]</obj_property>
+      <obj_property name="ObjectShortName">bit_state_next[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/is_read_req" type="logic">
+      <obj_property name="ElementShortName">is_read_req</obj_property>
+      <obj_property name="ObjectShortName">is_read_req</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/rx_byte" type="array">
+      <obj_property name="ElementShortName">rx_byte[7:0]</obj_property>
+      <obj_property name="ObjectShortName">rx_byte[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/num_bytes_to_read" type="array">
+      <obj_property name="ElementShortName">num_bytes_to_read[7:0]</obj_property>
+      <obj_property name="ObjectShortName">num_bytes_to_read[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/m_axis_resp_tvalid" type="logic">
+      <obj_property name="ElementShortName">m_axis_resp_tvalid</obj_property>
+      <obj_property name="ObjectShortName">m_axis_resp_tvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/resp_tvalid" type="logic">
+      <obj_property name="ElementShortName">resp_tvalid</obj_property>
+      <obj_property name="ObjectShortName">resp_tvalid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/m_axis_resp_tdata" type="array">
+      <obj_property name="ElementShortName">m_axis_resp_tdata[7:0]</obj_property>
+      <obj_property name="ObjectShortName">m_axis_resp_tdata[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/m_axis_resp_tlast" type="logic">
+      <obj_property name="ElementShortName">m_axis_resp_tlast</obj_property>
+      <obj_property name="ObjectShortName">m_axis_resp_tlast</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/m_axis_resp_tready" type="logic">
+      <obj_property name="ElementShortName">m_axis_resp_tready</obj_property>
+      <obj_property name="ObjectShortName">m_axis_resp_tready</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/quantagen_clr" type="logic">
+      <obj_property name="ElementShortName">quantagen_clr</obj_property>
+      <obj_property name="ObjectShortName">quantagen_clr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_axis_i2c_master/DUT/num_bytes_written" type="array">
+      <obj_property name="ElementShortName">num_bytes_written[7:0]</obj_property>
+      <obj_property name="ObjectShortName">num_bytes_written[7:0]</obj_property>
+   </wvobject>
+</wave_config>

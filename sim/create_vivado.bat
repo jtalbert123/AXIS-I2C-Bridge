@@ -1,0 +1,1 @@
+start /b vivado -mode gui -source ../syn/AXIS-I2C.tcl
