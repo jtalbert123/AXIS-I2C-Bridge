@@ -34,6 +34,7 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
         i2c_item current_tr;
         forever begin
             seq_item_port.get_next_item(current_tr);
+            `uvm_info(get_name(), "got response item", UVM_MEDIUM)
             phase.raise_objection(this);
             next_tr = current_tr;
             wait (item_done.triggered);
@@ -43,9 +44,9 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
     endtask
     
     virtual task run_phase(uvm_phase phase);
-        logic [7:0] addr;
-        logic [7:0] data[];
-        logic [7:0] dataq[$];
+        bit [7:0] addr;
+        bit [7:0] data[];
+        bit [7:0] dataq[$];
         enum   {IDLE,
                 ADDR,
                 POST_ADDR,
@@ -54,8 +55,8 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
                 ACK,
                 PRE_STOP,
                 STOP} state;
-        logic [3:0] bit_index;
-        logic oldscl, oldsda;
+        bit [3:0] bit_index;
+        bit oldscl, oldsda;
         fork
             get_items(phase);
         join_none
@@ -72,7 +73,7 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
                     if (oldsda && !this.IF.sda) begin
                         state = ADDR;
                         bit_index = 7;
-                        `uvm_info(get_name(), "moving to ADDR", UVM_DEBUG)
+                        `uvm_info(get_name(), "moving to ADDR", UVM_MEDIUM)
                     end
                 end
                 ADDR: begin
@@ -85,10 +86,10 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
                         if (bit_index == 0) begin
                             if (addr == {this.next_tr.get_address(), this.next_tr.get_tr_type()} && (this.next_tr.get_final_ack() || dataq.size() > 0)) begin 
                                 state = POST_ADDR;
-                                `uvm_info(get_name(), "ACKing matching address/type combo", UVM_DEBUG)
+                                `uvm_info(get_name(), "ACKing matching address/type combo", UVM_MEDIUM)
                             end else begin
                                 state = IDLE;
-                                `uvm_info(get_name(), "Not ACKing unmatching address/type combo", UVM_DEBUG)
+                                `uvm_info(get_name(), "Not ACKing unmatching address/type combo", UVM_MEDIUM)
                             end
                             bit_index = 7;
                         end else begin
@@ -121,7 +122,7 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
                                 dataq.pop_front();
                                 this.IF.sda_o_slv = 1;
                                 state = ACK;
-                                `uvm_info(get_name(), "moving to ACK", UVM_DEBUG)
+                                `uvm_info(get_name(), "moving to ACK", UVM_MEDIUM)
                                 bit_index = 7;
                             end else begin
                                 bit_index = bit_index - 1;
@@ -139,7 +140,7 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
                                 end else begin
                                     this.IF.sda_o_slv = 1;
                                 end
-                                `uvm_info(get_name(), "moving to ACK", UVM_DEBUG)
+                                `uvm_info(get_name(), "moving to ACK", UVM_MEDIUM)
                                 bit_index = 7;
                             end else begin
                                 bit_index = bit_index - 1;

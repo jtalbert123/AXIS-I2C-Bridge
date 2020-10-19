@@ -63,22 +63,25 @@ endfunction : new;
 function void axi4stream_uvm_mst_agent::build_phase(uvm_phase phase);
     super.build_phase(phase);
     inner_agent = new("axi4steam_mst_agent", vif);
+    sequencer = new("input_sequencer", this);
+    ap = new("monitor_ap", this);
 endfunction : build_phase;
 
 task axi4stream_uvm_mst_agent::run_phase(uvm_phase phase);
     super.run_phase(phase);
     inner_agent.vif_proxy.set_dummy_drive_type(XIL_AXI4STREAM_VIF_DRIVE_NONE);
     inner_agent.start_master();
-    // fork
-    //     monitor_adapter();
-    //     driver_adapter();
-    // join
+    fork
+        monitor_adapter();
+        driver_adapter();
+    join
 endtask : run_phase;
 
 task axi4stream_uvm_mst_agent::driver_adapter();
     transaction tr;
     forever begin
         sequencer.get_next_item(tr);
+        `uvm_info(get_name(), $sformatf("Sending %s", tr.convert2string()), UVM_MEDIUM);
         foreach (tr.beats[i]) begin
             inner_agent.driver.send(tr.beats[i]);
         end
@@ -99,7 +102,7 @@ task axi4stream_uvm_mst_agent::monitor_adapter();
         tr.beats.push_back(beat);
         if (beat.get_last()) begin
             beat.get_keep(keepd);
-            keep = {<<{keepd}};
+            keep = {>>{keepd}};
             tr.length += $clog2(keep);
             ap.write(tr);
             tr = new("axi4stream_uvm_mst_txn");

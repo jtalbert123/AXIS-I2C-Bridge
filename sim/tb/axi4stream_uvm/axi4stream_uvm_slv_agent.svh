@@ -63,16 +63,18 @@ endfunction : new;
 function void axi4stream_uvm_slv_agent::build_phase(uvm_phase phase);
     super.build_phase(phase);
     inner_agent = new("axi4steam_slv_agent", vif);
+    sequencer = new("input_sequencer", this);
+    ap = new("monitor_ap", this);
 endfunction : build_phase;
 
 task axi4stream_uvm_slv_agent::run_phase(uvm_phase phase);
     super.run_phase(phase);
     inner_agent.vif_proxy.set_dummy_drive_type(XIL_AXI4STREAM_VIF_DRIVE_NONE);
     inner_agent.start_slave();
-    // fork
-    //     monitor_adapter();
-    //     driver_adapter();
-    // join
+    fork
+        monitor_adapter();
+        driver_adapter();
+    join
 endtask : run_phase;
 
 task axi4stream_uvm_slv_agent::driver_adapter();
@@ -92,7 +94,7 @@ task axi4stream_uvm_slv_agent::monitor_adapter();
         tr.beats.push_back(beat);
         if (beat.get_last()) begin
             beat.get_keep(keepd);
-            keep = {<<{keepd}};
+            keep = {>>{keepd}};
             tr.length += $clog2(keep);
             ap.write(tr);
             tr = new("axi4stream_uvm_slv_txn");

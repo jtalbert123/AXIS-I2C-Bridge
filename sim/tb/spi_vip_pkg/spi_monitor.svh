@@ -8,6 +8,10 @@ class spi_monitor#(integer WORD_SIZE = 8) extends uvm_monitor;
     function new(string name = "spi_monitor", uvm_component parent = null);
         super.new(name, parent);
     endfunction : new
+
+    virtual function void build_phase(uvm_phase phase);
+        ap = new("monitor_ap", this);
+    endfunction : build_phase
     
     virtual task run_phase(uvm_phase phase);
         logic [WORD_SIZE-1:0] misoq[$], misodata[];

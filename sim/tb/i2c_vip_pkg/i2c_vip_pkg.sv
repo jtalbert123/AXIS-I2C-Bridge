@@ -12,5 +12,6 @@ typedef enum {MASTER, SLAVE} driver_type_t;
 `include "i2c_slv_driver.svh"
 `include "i2c_agent_config.svh"
 `include "i2c_agent.svh"
+`include "read_resp.svh"
 
 endpackage

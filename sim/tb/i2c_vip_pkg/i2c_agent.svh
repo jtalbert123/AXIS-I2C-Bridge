@@ -28,7 +28,7 @@ function void i2c_agent::build_phase(uvm_phase phase);
     end else if (get_is_active() && cfg.driver_type == MASTER) begin
         `uvm_fatal(get_name(), "MASTER mode not yet implemented.")
     end
-    sequencer = new("input_sequencer");
+    sequencer = new("input_sequencer", this);
 endfunction : build_phase
 
 function void i2c_agent::connect_phase(uvm_phase phase);

@@ -28,11 +28,15 @@ class i2c_monitor extends uvm_monitor;
     function new(string name = "i2c_monitor", uvm_component parent);
         super.new(name, parent);
     endfunction : new
+
+    virtual function void build_phase(uvm_phase phase);
+        ap = new("monitor_ap", this);
+    endfunction : build_phase
     
     virtual task run_phase(uvm_phase phase);
-        logic [7:0] addr;
-        logic ack;
-        logic [7:0] dataq[$];
+        bit [7:0] addr;
+        bit ack;
+        bit [7:0] dataq[$];
         enum   {IDLE,
                 ADDR,
                 ADDRACK,
@@ -40,8 +44,8 @@ class i2c_monitor extends uvm_monitor;
                 ACK,
                 PRE_STOP,
                 STOP} state;
-        logic [3:0] bit_index;
-        logic oldscl, oldsda;
+        bit [3:0] bit_index;
+        bit oldscl, oldsda;
         oldscl = 0;
         oldsda = 0;
         state = IDLE;
@@ -101,9 +105,9 @@ class i2c_monitor extends uvm_monitor;
                     // bit index = 6 because the leading edge of SCL to get it high for the stop will clock a zero bit from SDA.
                     if ((bit_index == 6) && this.IF.scl && !oldsda && this.IF.sda) begin
                         // Write transaction ended by master.
-                        logic [7:0] data[];
+                        bit [7:0] data[];
                         dataq.pop_back();
-                        data = {<<{dataq}};
+                        data = {>>{dataq}};
                         tr = new("monitor_trxn");
                         tr.set_address(addr[7:1]);
                         tr.set_tr_type(addr[0]);
@@ -140,8 +144,8 @@ class i2c_monitor extends uvm_monitor;
                         `uvm_error(get_name(), "databit clocked after NACK.")
                     end
                     if (this.IF.scl && !oldsda && this.IF.sda) begin
-                        logic [7:0] data[];
-                        data = {<<{dataq}};
+                        bit [7:0] data[];
+                        data = {>>{dataq}};
                         tr = new("monitor_trxn");
                         tr.set_address(addr[7:1]);
                         tr.set_tr_type(addr[0]);
@@ -152,8 +156,8 @@ class i2c_monitor extends uvm_monitor;
                         state = IDLE;
                     end
                     if (this.IF.scl && oldsda && !this.IF.sda) begin
-                        logic [7:0] data[];
-                        data = {<<{dataq}};
+                        bit [7:0] data[];
+                        data = {>>{dataq}};
                         tr = new("monitor_trxn");
                         tr.set_address(addr[7:1]);
                         tr.set_tr_type(addr[0]);

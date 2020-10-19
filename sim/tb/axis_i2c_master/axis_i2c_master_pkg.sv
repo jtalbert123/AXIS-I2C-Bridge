@@ -30,5 +30,6 @@ typedef virtual interface axi4stream_vip_if#(
 ) axis_slave_if;
 
 `include "axis_i2c_master_env.svh"
+`include "read_req.svh"
 
 endpackage
