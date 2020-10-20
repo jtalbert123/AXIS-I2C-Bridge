@@ -94,11 +94,11 @@ function string axi4stream_uvm_transaction::convert2string();
     end
     foreach (dataq[i]) begin
         if (((i % 16) != 15) || (i == beats.size()-1)) begin
-            s = {s, $sformatf("%0h ", dataq[i])};
+            s = {s, $sformatf("%02h ", dataq[i])};
         end else if (((i % 16) == 15) && (i != beats.size()-1)) begin
-            s = {s, $sformatf("%0h\n", dataq[i])};
+            s = {s, $sformatf("%02h\n", dataq[i])};
         end else if (((i % 16) == 15) && (i == beats.size()-1)) begin
-            s = {s, $sformatf("%0h", dataq[i])};
+            s = {s, $sformatf("%02h", dataq[i])};
         end
     end
     return s;

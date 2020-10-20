@@ -5,7 +5,7 @@ class generic_listener#(type T = int) extends uvm_subscriber#(.T(T));
         super.new(name, parent);
     endfunction : new
 
-    virtual function void write(T item);
-        `uvm_info(get_name(), item.convert2striung(), UVM_MEDIUM)
+    virtual function void write(T t);
+        `uvm_info(get_name(), {"Listener item:\n", t.convert2string()}, UVM_MEDIUM)
     endfunction : write
 endclass

@@ -9,6 +9,7 @@ import axi4stream_vip_pkg::*;
 import axis_master_0_pkg::*;
 import axis_slave_0_pkg::*;
 import axi4stream_uvm_pkg::*;
+import generic_components_pkg::*;
 
 typedef virtual interface axi4stream_vip_if#(
     axis_master_0_VIP_SIGNAL_SET,
