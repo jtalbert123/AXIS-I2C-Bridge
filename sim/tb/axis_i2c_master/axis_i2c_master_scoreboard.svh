@@ -191,7 +191,7 @@ function void axis_i2c_master_scoreboard::check_response();
                     // break;
                 end
             end
-            if ((resp_bytes.size() - 1 != i2c_data.size()) begin
+            if (resp_bytes.size() - 1 != i2c_data.size()) begin
                 `uvm_error(get_name(), $sformatf("Master reported wrong number of bytes read, got  %02h, expected %02h", i2c_data.size(), resp_bytes.size() - 1))
             end
         end
