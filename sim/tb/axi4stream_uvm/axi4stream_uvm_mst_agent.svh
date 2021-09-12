@@ -81,7 +81,6 @@ task axi4stream_uvm_mst_agent::driver_adapter();
     transaction tr;
     forever begin
         sequencer.get_next_item(tr);
-        `uvm_info(get_name(), $sformatf("Sending %s", tr.convert2string()), UVM_MEDIUM);
         foreach (tr.beats[i]) begin
             inner_agent.driver.send(tr.beats[i]);
         end
@@ -102,8 +101,12 @@ task axi4stream_uvm_mst_agent::monitor_adapter();
         tr.beats.push_back(beat);
         if (beat.get_last()) begin
             beat.get_keep(keepd);
-            keep = {>>{keepd}};
-            tr.length += $clog2(keep);
+            if (keepd.size() > 0) begin
+                keep = {>>{keepd}};
+                tr.length += $clog2(keep);
+            end else begin
+                tr.length += DATA_WIDTH/8;
+            end
             ap.write(tr);
             tr = new("axi4stream_uvm_mst_txn");
         end else begin

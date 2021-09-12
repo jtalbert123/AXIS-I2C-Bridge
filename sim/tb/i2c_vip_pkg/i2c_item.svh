@@ -22,28 +22,28 @@
 class i2c_item extends uvm_sequence_item;
     `uvm_object_utils(i2c_item)
 
-    bit [6:0] address;
-    bit read_nWrite;
-    bit [7:0] data[];
-    bit final_ack;
+    bit   [6:0] address;
+    bit   read_nWrite;
+    byteq data;
+    bit   final_ack;
     
     function new(input string name = "i2c_item");
         super.new(name);
     endfunction
     
-    virtual function void set_address(input bit [6:0] address);
+    virtual function void set_address(bit [6:0] address);
         this.address = address;
     endfunction
     
-    virtual function void set_tr_type(input bit read_nWrite);
+    virtual function void set_tr_type(bit read_nWrite);
         this.read_nWrite = read_nWrite;
     endfunction
     
-    virtual function void set_data(input bit [7:0] data[]);
-        this.data = new[data.size()](data);
+    virtual function void set_data(byteq data);
+        this.data = {data};
     endfunction
     
-    virtual function void set_final_ack(input bit final_ack);
+    virtual function void set_final_ack(bit final_ack);
         this.final_ack = final_ack;
     endfunction
     
@@ -55,8 +55,8 @@ class i2c_item extends uvm_sequence_item;
         return this.read_nWrite;
     endfunction
     
-    virtual function void get_data(output bit [7:0] data[]);
-        data = new[this.data.size()](this.data);
+    virtual function void get_data(output byteq data);
+        data = {this.data};
     endfunction
     
     virtual function integer get_data_size();

@@ -94,8 +94,12 @@ task axi4stream_uvm_slv_agent::monitor_adapter();
         tr.beats.push_back(beat);
         if (beat.get_last()) begin
             beat.get_keep(keepd);
-            keep = {>>{keepd}};
-            tr.length += $clog2(keep);
+            if (keepd.size() > 0) begin
+                keep = {>>{keepd}};
+                tr.length += $clog2(keep);
+            end else begin
+                tr.length += DATA_WIDTH/8;
+            end
             ap.write(tr);
             tr = new("axi4stream_uvm_slv_txn");
         end else begin

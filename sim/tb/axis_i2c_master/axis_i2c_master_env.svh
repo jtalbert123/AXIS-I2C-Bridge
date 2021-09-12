@@ -20,6 +20,15 @@ class axis_i2c_master_env extends uvm_env;
         .USER_WIDTH(axis_slave_0_VIP_USER_WIDTH),
         .USER_BITS_PER_BYTE(axis_slave_0_VIP_USER_BITS_PER_BYTE)
     ) stream_packet_out;
+    
+    typedef axis_i2c_master_scoreboard#(
+        .SIGNAL_SET(axis_slave_0_VIP_SIGNAL_SET),
+        .DEST_WIDTH(axis_slave_0_VIP_DEST_WIDTH),
+        .DATA_WIDTH(axis_slave_0_VIP_DATA_WIDTH),
+        .ID_WIDTH(axis_slave_0_VIP_ID_WIDTH),
+        .USER_WIDTH(axis_slave_0_VIP_USER_WIDTH),
+        .USER_BITS_PER_BYTE(axis_slave_0_VIP_USER_BITS_PER_BYTE)
+    ) scoreboard_t;
 
     typedef axi4stream_uvm_mst_agent#(
         .SIGNAL_SET(axis_master_0_VIP_SIGNAL_SET),
@@ -40,14 +49,23 @@ class axis_i2c_master_env extends uvm_env;
         .HAS_ARESETN(axis_slave_0_VIP_HAS_ARESETN)
     ) axis_uvm_slave;
 
+    typedef byteq_to_axi4stream#(stream_packet_in) down_seq;
+    down_seq mst_byteq_converter;
+
+    uvm_sequencer#(byteq_item) input_sequencer;
+
     i2c_agent i2c_agent_h;
     axis_uvm_master axis_mst_agent_h;
 	axis_uvm_slave  axis_slv_agent_h;
 
     typedef generic_listener#(stream_packet_in)  axis_in_listener;
     typedef generic_listener#(stream_packet_out) axis_out_listener;
+    typedef generic_listener#(i2c_item) i2c_listener_t;
     axis_in_listener  axis_output_listener;
     axis_out_listener axis_input_listener;
+    i2c_listener_t i2c_listener;
+
+    scoreboard_t scoreboard;
 
     extern         function      new(string name = "axis_i2c_master_env", uvm_component parent = null);
     extern virtual function void build_phase(uvm_phase phase);
@@ -78,19 +96,31 @@ function void axis_i2c_master_env::build_phase(uvm_phase phase);
         `uvm_fatal(get_name(), "Could not get axis slave vif from db")
     end
 
+    scoreboard = new("scoreboard", this);
+
     // axis_input_listener  =  axis_in_listener::type_id()::create("axis_input_listener", this);
     // axis_output_listener = axis_out_listener::type_id()::create("axis_output_listener", this);
 
     axis_input_listener  =  new("axis_input_listener", this);
     axis_output_listener = new("axis_output_listener", this);
+    i2c_listener = new("i2c_listener", this);
+
+    mst_byteq_converter = down_seq::type_id::create("mst_byteq_converter");
+    input_sequencer = new("byteq_input_sequencer");
 
 endfunction : build_phase
 
 function void axis_i2c_master_env::connect_phase(uvm_phase phase);
     axis_mst_agent_h.ap.connect(axis_input_listener.analysis_export);
     axis_slv_agent_h.ap.connect(axis_output_listener.analysis_export);
+    i2c_agent_h.ap.connect(i2c_listener.analysis_export);
+    axis_mst_agent_h.ap.connect(scoreboard.req_export);
+    axis_slv_agent_h.ap.connect(scoreboard.resp_export);
+    i2c_agent_h.ap.connect(scoreboard.i2c_export);
+    mst_byteq_converter.input_sequencer = input_sequencer;
 endfunction : connect_phase
 
 task axis_i2c_master_env::run_phase(uvm_phase phase);
     super.run_phase(phase);
+    mst_byteq_converter.start(axis_mst_agent_h.sequencer    );
 endtask : run_phase

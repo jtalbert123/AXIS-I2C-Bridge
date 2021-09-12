@@ -6,5 +6,6 @@ package generic_components_pkg;
 import uvm_pkg::*;
 
 `include "generic_listener.svh"
+`include "byteq.svh"
 
 endpackage

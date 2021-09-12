@@ -122,7 +122,7 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
                                 dataq.pop_front();
                                 this.IF.sda_o_slv = 1;
                                 state = ACK;
-                                `uvm_info(get_name(), "moving to ACK", UVM_MEDIUM)
+                                // `uvm_info(get_name(), "moving to ACK", UVM_MEDIUM)
                                 bit_index = 7;
                             end else begin
                                 bit_index = bit_index - 1;
@@ -140,7 +140,7 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
                                 end else begin
                                     this.IF.sda_o_slv = 1;
                                 end
-                                `uvm_info(get_name(), "moving to ACK", UVM_MEDIUM)
+                                // `uvm_info(get_name(), "moving to ACK", UVM_MEDIUM)
                                 bit_index = 7;
                             end else begin
                                 bit_index = bit_index - 1;

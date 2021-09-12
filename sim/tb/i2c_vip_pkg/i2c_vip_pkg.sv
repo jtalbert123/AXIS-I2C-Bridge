@@ -4,6 +4,7 @@ package i2c_vip_pkg;
 
 `include "uvm_macros.svh"
 import uvm_pkg::*;
+import generic_components_pkg::*;
 
 typedef enum {MASTER, SLAVE} driver_type_t;
 
