@@ -140,6 +140,26 @@ module tb_top(
         .m_axi_rready ( axilite_if.rready  )      // output wire m_axi_rready
     );
 
+    logic start, stop;
+
+    always @(posedge i2c_if.sda or negedge i2c_if.scl) begin
+        stop = 0;
+        if (i2c_if.scl) begin
+            stop = 1;
+        end else begin
+            stop = 0;
+        end
+    end
+
+    always @(negedge i2c_if.sda or negedge i2c_if.scl) begin
+        start = 0;
+        if (i2c_if.scl) begin
+            start = 1;
+        end else begin
+            start = 0;
+        end
+    end
+
     initial begin
         uvm_config_db#(axis_master_if)::set(null, "*", "axis_mst_vif", axis_master.inst.IF);
         uvm_config_db#(axis_slave_if)::set(null, "*", "axis_slv_vif", axis_slave.inst.IF);

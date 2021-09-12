@@ -11,7 +11,9 @@
 		// Width of S_AXI data bus
 		parameter integer C_S_AXI_DATA_WIDTH	= 32,
 		// Width of S_AXI address bus
-		parameter integer C_S_AXI_ADDR_WIDTH	= 7
+		parameter integer C_S_AXI_ADDR_WIDTH	= 7,
+
+		parameter DEF_PERIODS = 4
 	)
 	(
 		// Users to add ports here
@@ -246,16 +248,16 @@
 	      slv_reg5 <= 0;
 	      slv_reg6 <= 0;
 	      slv_reg7 <= 0;
-          period_1 <= 1000;
-          period_2 <= 1000;
-          period_3 <= 1000;
-          period_4 <= 1000;
-          period_start_1 <= 1000;
-          period_start_2 <= 1000;
-          period_start_3 <= 1000;
-          period_stop_1 <= 1000;
-          period_stop_2 <= 1000;
-          period_stop_3 <= 1000;
+          period_1 <= DEF_PERIODS;
+          period_2 <= DEF_PERIODS;
+          period_3 <= DEF_PERIODS;
+          period_4 <= DEF_PERIODS;
+          period_start_1 <= DEF_PERIODS;
+          period_start_2 <= DEF_PERIODS;
+          period_start_3 <= DEF_PERIODS;
+          period_stop_1 <= DEF_PERIODS;
+          period_stop_2 <= DEF_PERIODS;
+          period_stop_3 <= DEF_PERIODS;
 	    end 
 	  else begin
 	    if (slv_reg_wren)

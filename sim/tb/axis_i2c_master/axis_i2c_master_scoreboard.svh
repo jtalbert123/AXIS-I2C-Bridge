@@ -84,21 +84,27 @@ endfunction : build_phase
 
 function void axis_i2c_master_scoreboard::write_axis_req(stream_packet_in t);
     req_q.push_back(t);
+    `uvm_info("ap-debug", $sformatf("scoreboard got req item, there are %0d in the queue", req_q.size()), UVM_MEDIUM)
+    `uvm_info("ap-debug", t.convert2string(), UVM_MEDIUM)
     check_request();
 endfunction : write_axis_req
 
 function void axis_i2c_master_scoreboard::write_i2c(i2c_item t);
     i2c_q.push_back(t);
+    `uvm_info("ap-debug", $sformatf("scoreboard got i2c item, there are %0d in the queue", i2c_q.size()), UVM_MEDIUM)
+    `uvm_info("ap-debug", t.convert2string(), UVM_MEDIUM)
     check_request();
 endfunction : write_i2c
 
 function void axis_i2c_master_scoreboard::write_axis_resp(stream_packet_in t);
     resp_q.push_back(t);
+    `uvm_info("ap-debug", $sformatf("scoreboard got resp item, there are %0d in the queue", resp_q.size()), UVM_MEDIUM)
+    `uvm_info("ap-debug", t.convert2string(), UVM_MEDIUM)
     check_response();
 endfunction : write_axis_resp
 
 function void axis_i2c_master_scoreboard::check_request();
-    while (req_q.size() > 1 && i2c_q.size() > 1) begin
+    while (req_q.size() >= 1 && i2c_q.size() >= 1) begin
         stream_packet_in req;
         bit[7:0] req_bytes[$];
         i2c_item i2c;
@@ -121,7 +127,7 @@ function void axis_i2c_master_scoreboard::check_request();
         end else if (req_bytes[0][0] != i2c.get_tr_type()) begin
             `uvm_error(get_name(), $sformatf("Request resulted in I2C transaction with incorrect type. Got $0b, expected %0b", i2c.get_tr_type(), req_bytes[0][0]))
         end else if (expected_data_size < i2c.get_data_size()) begin
-            `uvm_error(get_name(), $sformatf("Request resulted in I2C transaction with bad length. Got $0d, expected <= %0d", i2c.get_data_size(), req_bytes[1]))
+            `uvm_error(get_name(), $sformatf("Request resulted in I2C transaction with bad length. Got %0d, expected <= %0d", i2c.get_data_size(), req_bytes[1]))
         end else if ((expected_data_size > i2c.get_data_size()) &&
                      (i2c.get_tr_type() == 1'b1)) begin
             `uvm_error(get_name(), $sformatf("Read request terminated early by master, got  %0d, expected %0d", i2c.get_data_size(), req_bytes[1]))
@@ -140,12 +146,16 @@ function void axis_i2c_master_scoreboard::check_request();
         end
         i2c_resp_q.push_back(i2c);
         req_resp_q.push_back(req);
+        `uvm_info("ap-debug", $sformatf("scoreboard saved i2c item, there are %0d in the queue", i2c_resp_q.size()), UVM_MEDIUM)
+        `uvm_info("ap-debug", i2c.convert2string(), UVM_MEDIUM)
+        `uvm_info("ap-debug", $sformatf("scoreboard saved req item, there are %0d in the queue", req_resp_q.size()), UVM_MEDIUM)
+        `uvm_info("ap-debug", req.convert2string(), UVM_MEDIUM)
         check_response();
     end
 endfunction : check_request
 
 function void axis_i2c_master_scoreboard::check_response();
-    while (resp_q.size() > 1 && i2c_resp_q.size() > 1 && i2c_resp_q.size() > 1) begin
+    while (resp_q.size() >= 1 && i2c_resp_q.size() >= 1 && i2c_resp_q.size() >= 1) begin
         i2c_item i2c;
         bit[7:0] i2c_data[];
 
@@ -168,14 +178,14 @@ function void axis_i2c_master_scoreboard::check_response();
                                  (i2c.get_tr_type() == 1'b0) &&
                                  (i2c.get_final_ack() == 1'b0);
         
-        if ((slave_terminated_early == 1'b1) && (resp_bytes[0] == 8'd0)) begin
+        if ((i2c.get_tr_type() == 0) && (slave_terminated_early == 1'b1) && (resp_bytes[0] == 8'd0)) begin
             `uvm_error(get_name(), "Master failed to report write error to user logic.")
-        end else if ((slave_terminated_early == 1'b1) && (resp_bytes[1] != i2c.get_data_size())) begin
+        end else if ((i2c.get_tr_type() == 0) && (slave_terminated_early == 1'b1) && (resp_bytes[1] != i2c.get_data_size())) begin
             `uvm_error(get_name(), $sformatf("Master reported incorrect write size, got %0d, expected %0d.", resp_bytes[1], i2c.get_data_size()))
         end else if ((i2c.get_tr_type() == 1'b1)) begin
-            foreach (resp_bytes[i]) begin
-                if (i2c_data[i] != resp_bytes[i]) begin
-                    `uvm_error(get_name(), $sformatf("Master reported wrong read data, got  %02h, expected %02h", i2c_data[i], resp_bytes[i]))
+            foreach (i2c_data[i]) begin
+                if (i2c_data[i] != resp_bytes[i+1]) begin
+                    `uvm_error(get_name(), $sformatf("Master reported wrong read data at axis byte %0d, got  %02h, expected %02h", i, i2c_data[i], resp_bytes[i+1]))
                     // break;
                 end
             end

@@ -61,6 +61,7 @@ task basic_test::run_phase(uvm_phase phase);
         end
     join_any
     #200us;
+    `uvm_info(get_name(), "Droppping objection", UVM_MEDIUM)    
     phase.drop_objection(this);
 endtask : run_phase
 

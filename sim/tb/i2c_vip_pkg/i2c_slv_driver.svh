@@ -30,14 +30,25 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
         super.new(name, parent);
     endfunction : new
 
+    enum   {IDLE,
+            ADDR,
+            POST_ADDR,
+            ADDRACK,
+            DATA,
+            ACK,
+            PRE_STOP,
+            STOP} state;
+
     virtual task get_items(uvm_phase phase);
         i2c_item current_tr;
         forever begin
             seq_item_port.get_next_item(current_tr);
-            `uvm_info(get_name(), "got response item", UVM_MEDIUM)
+            `uvm_info(get_name(), $sformatf("got response item in state %p", state), UVM_MEDIUM)
+            `uvm_info(get_name(), $sformatf("addr,type: %02x", {current_tr.get_address(), current_tr.get_tr_type()}), UVM_MEDIUM)
             phase.raise_objection(this);
             next_tr = current_tr;
-            wait (item_done.triggered);
+            @item_done;
+            `uvm_info(get_name(), "finished response item", UVM_MEDIUM)
             seq_item_port.item_done(current_tr);
             phase.drop_objection(this);
         end
@@ -47,14 +58,6 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
         bit [7:0] addr;
         bit [7:0] data[];
         bit [7:0] dataq[$];
-        enum   {IDLE,
-                ADDR,
-                POST_ADDR,
-                ADDRACK,
-                DATA,
-                ACK,
-                PRE_STOP,
-                STOP} state;
         bit [3:0] bit_index;
         bit oldscl, oldsda;
         fork
@@ -74,10 +77,12 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
                         state = ADDR;
                         bit_index = 7;
                         `uvm_info(get_name(), "moving to ADDR", UVM_MEDIUM)
+                        `uvm_info(get_name(), $sformatf("Response item: %s", (next_tr == null) ? "null" : "not null"), UVM_MEDIUM)
                     end
                 end
                 ADDR: begin
                     if (this.next_tr == null) begin
+                        `uvm_info(get_name(), "No response item, ignoring address", UVM_MEDIUM)
                         state = IDLE;
                     end else if (!oldscl && this.IF.scl) begin
                         this.next_tr.get_data(data);
@@ -180,11 +185,13 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
                     end
                     if (this.IF.scl && !oldsda && this.IF.sda) begin
                         state = IDLE;
+                        `uvm_info(get_name(), "STOP, clearing tr and going to IDLE", UVM_MEDIUM)
                         next_tr = null;
                         ->item_done;
                     end
                     if (this.IF.scl && oldsda && !this.IF.sda) begin
                         state = ADDR;
+                        `uvm_info(get_name(), "START, clearing tr and going to IDLE", UVM_MEDIUM)
                         next_tr = null;
                         ->item_done;
                     end;
