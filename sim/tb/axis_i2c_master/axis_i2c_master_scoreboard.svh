@@ -178,16 +178,21 @@ function void axis_i2c_master_scoreboard::check_response();
                                  (i2c.get_tr_type() == 1'b0) &&
                                  (i2c.get_final_ack() == 1'b0);
         
-        if ((i2c.get_tr_type() == 0) && (slave_terminated_early == 1'b1) && (resp_bytes[0] == 8'd0)) begin
-            `uvm_error(get_name(), "Master failed to report write error to user logic.")
-        end else if ((i2c.get_tr_type() == 0) && (slave_terminated_early == 1'b1) && (resp_bytes[1] != i2c.get_data_size())) begin
-            `uvm_error(get_name(), $sformatf("Master reported incorrect write size, got %0d, expected %0d.", resp_bytes[1], i2c.get_data_size()))
+        if (i2c.get_tr_type() == 0) begin
+            if ((slave_terminated_early == 1'b1) && (resp_bytes[0] == 8'd0)) begin
+                `uvm_error(get_name(), "Master failed to report write error to user logic.")
+            end else if ((slave_terminated_early == 1'b1) && (resp_bytes[1] != i2c.get_data_size())) begin
+                `uvm_error(get_name(), $sformatf("Master reported incorrect write size, got %0d, expected %0d.", resp_bytes[1], i2c.get_data_size()))
+            end
         end else if ((i2c.get_tr_type() == 1'b1)) begin
             foreach (i2c_data[i]) begin
                 if (i2c_data[i] != resp_bytes[i+1]) begin
                     `uvm_error(get_name(), $sformatf("Master reported wrong read data at axis byte %0d, got  %02h, expected %02h", i, i2c_data[i], resp_bytes[i+1]))
                     // break;
                 end
+            end
+            if ((resp_bytes.size() - 1 != i2c_data.size()) begin
+                `uvm_error(get_name(), $sformatf("Master reported wrong number of bytes read, got  %02h, expected %02h", i2c_data.size(), resp_bytes.size() - 1))
             end
         end
     end
