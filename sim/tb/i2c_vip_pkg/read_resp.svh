@@ -23,7 +23,6 @@ function read_resp::new(string name = "read_resp");
 endfunction : new
 
 task read_resp::body();
-    bit[7:0] request[2];
     i2c_item req = new("read_resp");
     wait_for_grant();
     req.set_address(address);

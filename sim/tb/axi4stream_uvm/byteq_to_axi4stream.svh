@@ -23,6 +23,7 @@ endclass
         forever begin
             input_sequencer.get_next_item(inputItem);
             streamItem = new(inputItem.get_name());
+            `uvm_info("stim-debug", $sformatf("got data: (%s) %s", inputItem.get_name(), inputItem.convert2string()), UVM_MEDIUM)
             streamItem.build(inputItem.get_data());
             
             wait_for_grant();

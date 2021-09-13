@@ -81,7 +81,7 @@ task axi4stream_uvm_mst_agent::driver_adapter();
     transaction tr;
     forever begin
         sequencer.get_next_item(tr);
-        `uvm_info(get_name(), "got stimulus item", UVM_MEDIUM)
+        `uvm_info(get_name(), $sformatf("got stimulus item %s", tr.convert2string()), UVM_MEDIUM)
         foreach (tr.beats[i]) begin
             // `uvm_info(get_name(), $sformatf("sending beat %0d: %02x", i, tr.get_bytes()[i]), UVM_MEDIUM)
             inner_agent.driver.send(tr.beats[i]);

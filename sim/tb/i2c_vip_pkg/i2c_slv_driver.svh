@@ -77,7 +77,11 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
                         state = ADDR;
                         bit_index = 7;
                         `uvm_info(get_name(), "moving to ADDR", UVM_MEDIUM)
-                        `uvm_info(get_name(), $sformatf("Response item: %s", (next_tr == null) ? "null" : "not null"), UVM_MEDIUM)
+                        if (next_tr != null) begin
+                            `uvm_info(get_name(), $sformatf("Response item: %s", next_tr.convert2string()), UVM_MEDIUM)
+                        end else begin
+                            `uvm_info(get_name(), $sformatf("Response item: null"), UVM_MEDIUM)
+                        end
                     end
                 end
                 ADDR: begin
@@ -112,7 +116,7 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
                     this.IF.sda_o_slv = 0;
                     if (oldscl && !this.IF.scl) begin
                         state = DATA;
-                        if (this.next_tr.get_type()) begin
+                        if (this.next_tr.get_tr_type()) begin
                             bit_index = 7;
                             this.IF.sda_o_slv = dataq[0][bit_index];
                         end else begin
@@ -121,7 +125,7 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
                     end
                 end
                 DATA: begin
-                    if (this.next_tr.get_type()) begin
+                    if (this.next_tr.get_tr_type()) begin
                         if (oldscl && !this.IF.scl) begin
                             if (bit_index == 0) begin
                                 dataq.pop_front();
@@ -140,7 +144,8 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
                                 dataq.pop_front();
                                 this.IF.sda_o_slv = 1;
                                 state = ACK;
-                                if ((this.next_tr.get_type() == 0) && (this.next_tr.get_final_ack() || dataq.size() > 0)) begin
+                                // `uvm_info("stim-debug", $sformatf("Deciding on ACK (DATA) for %s type=%0d, fack=%0d, dq.size=%0d", this.next_tr.get_name(), this.next_tr.get_tr_type(), this.next_tr.get_final_ack(), dataq.size()), UVM_MEDIUM)
+                                if ((this.next_tr.get_tr_type() == 0) && (this.next_tr.get_final_ack() || dataq.size() > 0)) begin
                                     this.IF.sda_o_slv = 0;
                                 end else begin
                                     this.IF.sda_o_slv = 1;
@@ -160,14 +165,15 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
                     end
                 end
                 ACK: begin
-                    if ((this.next_tr.get_type() == 0) && (this.next_tr.get_final_ack() || dataq.size() > 0)) begin
+                    // `uvm_info("stim-debug", $sformatf("Deciding on ACK (ACK) for %s type=%0d, fack=%0d, dq.size=%0d", this.next_tr.get_name(), this.next_tr.get_tr_type(), this.next_tr.get_final_ack(), dataq.size()), UVM_MEDIUM)
+                    if ((this.next_tr.get_tr_type() == 0) && (this.next_tr.get_final_ack() || dataq.size() > 0)) begin
                         this.IF.sda_o_slv = 0;
                     end else begin
                         this.IF.sda_o_slv = 1;
                     end
                     if (oldscl && !this.IF.scl) begin
                         if (dataq.size() > 0) begin
-                            if (this.next_tr.get_type()) begin
+                            if (this.next_tr.get_tr_type()) begin
                                 this.IF.sda_o_slv = dataq[0][bit_index];
                             end else begin
                                 this.IF.sda_o_slv = 1;
