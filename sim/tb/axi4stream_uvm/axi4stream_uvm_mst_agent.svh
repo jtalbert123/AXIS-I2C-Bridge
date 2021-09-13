@@ -86,7 +86,7 @@ task axi4stream_uvm_mst_agent::driver_adapter();
             // `uvm_info(get_name(), $sformatf("sending beat %0d: %02x", i, tr.get_bytes()[i]), UVM_MEDIUM)
             inner_agent.driver.send(tr.beats[i]);
         end
-        sequencer.item_done(tr);
+        sequencer.item_done();
     end
 endtask : driver_adapter
 

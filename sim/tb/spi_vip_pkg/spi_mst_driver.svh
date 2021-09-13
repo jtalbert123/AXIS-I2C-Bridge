@@ -35,8 +35,8 @@ class spi_mst_driver#(integer WORD_SIZE = 8, integer STATE_LEN = 2) extends uvm_
             seq_item_port.get_next_item(current_tr);
             phase.raise_objection(this);
             next_tr = current_tr;
-            wait (item_done.triggered);
-            seq_item_port.item_done(current_tr);
+            @item_done;
+            seq_item_port.item_done();
             phase.drop_objection(this);
         end
     endtask

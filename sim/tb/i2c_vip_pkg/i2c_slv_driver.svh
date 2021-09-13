@@ -49,7 +49,7 @@ class i2c_slv_driver extends uvm_driver#(i2c_item);
             next_tr = current_tr;
             @item_done;
             `uvm_info(get_name(), "finished response item", UVM_MEDIUM)
-            seq_item_port.item_done(current_tr);
+            seq_item_port.item_done();
             phase.drop_objection(this);
         end
     endtask

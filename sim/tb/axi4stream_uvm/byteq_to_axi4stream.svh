@@ -17,6 +17,7 @@ endclass
 
     task byteq_to_axi4stream::body();
         T streamItem;
+        T rsp;
         byteq_item inputItem;
         
         forever begin
@@ -27,7 +28,7 @@ endclass
             wait_for_grant();
             send_request(streamItem, 0);
             wait_for_item_done();
-            input_sequencer.item_done(inputItem);
+            input_sequencer.item_done();
         end
     endtask
 
